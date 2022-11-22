@@ -2,7 +2,7 @@ import duosecLogo from "../assets/logos/duosec-logo.svg";
 import facebookLogo from "../assets/logos/facebook-logo.svg";
 import instagramLogo from "../assets/logos/instagram-logo.svg";
 import twitterLogo from "../assets/logos/twitter-logo.svg";
-import secureLogin from "./secure-login.svg";
+import secureLogin from "../assets/LandingPage/secure-login.svg";
 
 const LandingPage = () => {
     return (
