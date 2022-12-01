@@ -1,3 +1,5 @@
+import React from "react";
+import { useNavigate } from "react-router-dom";
 import duosecLogo from "../assets/logos/duosec-logo.svg";
 import facebookLogo from "../assets/logos/facebook-logo.svg";
 import instagramLogo from "../assets/logos/instagram-logo.svg";
@@ -5,6 +7,8 @@ import twitterLogo from "../assets/logos/twitter-logo.svg";
 import secureLogin from "../assets/LandingPage/secure-login.svg";
 
 const LandingPage = () => {
+    const navigate = useNavigate();
+
     return (
         <div className="h-screen flex flex-col justify-between">
             {/* navbar */}
@@ -13,8 +17,22 @@ const LandingPage = () => {
                 <div className="flex flex-row justify-end gap-8">
                     <button className="text-md">Documentation</button>
                     <button className="text-md">About Us</button>
-                    <button className="text-md">Login</button>
-                    <button className="bg-[#333533] text-white rounded-full px-6">Register</button>
+                    <button
+                        className="text-md"
+                        onClick={() => {
+                            navigate("/login");
+                        }}
+                    >
+                        Login
+                    </button>
+                    <button
+                        className="bg-[#333533] text-white rounded-full px-6"
+                        onClick={() => {
+                            navigate("/registration-basic-details");
+                        }}
+                    >
+                        Register
+                    </button>
                 </div>
             </div>
 
