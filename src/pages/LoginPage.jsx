@@ -1,5 +1,5 @@
 import LoginForm from "../components/LoginPage/LoginForm.jsx";
-import img from "../assets/LoginPage/bgwelcome.png";
+import img from "../assets/logos/lightening.png";
 import duosecLogo from "../assets/logos/duosec-logo.svg";
 
 const LoginPage = () => {
