@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "../../utils/axios.js";
+import { registerIIValidationSchema, postCompanyRegisterIIDetails } from "./form-utils.js"
 import routes from "../../utils/routes.js";
 
 const RegisterFormII = () => {
@@ -10,28 +10,18 @@ const RegisterFormII = () => {
 
     const [registerDetails, setRegisterDetails] = useState({
         otpRefreshDuration: 0,
-        algorithm: "",
+        algorithm: "default",
         password: "",
         confirmPassword: "",
         companyUniqueId: ""
     });
 
-    // const uniqueCompanyId = 1235;
-
-    // const getCompanyDetails = async (companyId) => {
-    //     try {
-    //         const res = await axios.get(routes.companyDetails.getDetails, companyId);
-    //         const compData = await res.data;
-            
-    //         setCompanyDetails(compData);
-    //     } catch (err) {
-    //         console.log(err);
-    //     }
-    // }
-
-    // useEffect(() => {
-    //     getCompanyDetails(uniqueCompanyId);
-    // }, []);
+    const [errors, setErrors] = useState({ 
+        otpRefreshDuration: "",
+        algorithm: "",
+        password: "",
+        confirmPassword: "",
+    })
 
     const handleChangeInRegisterDetails = (event) => {
         setRegisterDetails((previousState) => {
@@ -39,48 +29,101 @@ const RegisterFormII = () => {
         });
     };
 
+    const handleSubmitCompanyDetails = (event) => {
+        event.preventDefault();
+        const formErrors = registerIIValidationSchema(companyDetails);
+        console.error(formErrors);
+        
+        if (Object.keys(formErrors).length !== 0) {
+            setErrors(formErrors);
+            console.error(formErrors);
+        } else {
+            // postCompanyRegisterIIDetails(routes.auth.registerI, companyDetails);
+        };
+    };
+
+    const decreaseByOne = () => {
+        setRegisterDetails((previousState) => {
+            if (previousState.otpRefreshDuration > 0) {
+                return { ...previousState, otpRefreshDuration: previousState.otpRefreshDuration - 1 };
+            }
+            
+            return previousState;
+        });
+    }
+
+    const increaseByOne = () => {
+        setRegisterDetails((previousState) => {
+            return { ...previousState, otpRefreshDuration: previousState.otpRefreshDuration + 1 };
+        });
+    }
+
     return (
         <React.Fragment>
-            <p className="">Enter Details For: {companyDetails.companyName}</p>
             <form
-                // onSubmit={handleSubmitCompanyDetails}
-                className="flex flex-col w-full gap-4 bg-red-500"
+                onSubmit={handleSubmitCompanyDetails}
+                className="flex flex-col w-full gap-y-8"
             >
-                <input
-                    type="email"
-                    value={companyDetails.companyName}
-                    disabled={true}
-                    className="rounded-md bg-[#E8EDDF]"
-                />
+                <div>
+                    <p className="text-3xl text-black">Enter Details For</p>
+                    <p className="text-3xl text-black">{companyDetails.companyName}</p>
+                </div>
 
-                {/* <input
-                    type="text"
-                    placeholder="Application/Company EmailId"
-                    name="companyEmailId"
-                    value={companyDetails.companyEmailId}
-                    onChange={handleChangeInCompanyDetails}
-                    className="bg-[#E8EDDF]"
-                /> */}
-
-                <input
-                    type="text"
-                    placeholder="Password"
-                    name="password"
-                    value={registerDetails.password}
-                    onChange={handleChangeInRegisterDetails}
-                    className="bg-[#E8EDDF]"
-                />
-
-                <input
-                    type="text"
-                    placeholder="Confirm Password"
-                    name="confirmPassword"
-                    value={registerDetails.password}
-                    onChange={handleChangeInRegisterDetails}
-                    className="bg-[#E8EDDF]"
-                />
+                <div className="flex flex-col justify-center gap-y-2">
+                    <input
+                        type="email"
+                        value={companyDetails.companyEmailId}
+                        disabled={true}
+                        className="rounded-md bg-[#E8EDDF]"
+                        />
+                </div>
                 
-                {/* <button type="submit" className="text-white bg-[#333533] rounded-full">Enter</button> */}
+                <div className="rounded-md flex flex-row justify-between items-center bg-[#E8EDDF] px-4">
+                    <span>OTP Refresh Duration</span>
+                    <div className="flex flex-row items-center py-4 gap-x-4">
+                        <button onClick={decreaseByOne}>-</button>
+                        <span className="">{registerDetails.otpRefreshDuration}</span>
+                        <button onClick={increaseByOne}>+</button>
+                    </div>
+                    <span>Mins</span>
+                </div>
+
+                <div className="flex flex-col justify-center gap-y-2">
+                    <select className="rounded-md" name="algorithm" value={registerDetails.algorithm} onChange={handleChangeInRegisterDetails}>
+                        <option value="">Select your algorithm</option>
+                        <option value="grapefruit">Grapefruit</option>
+                        <option value="lime">Lime</option>
+                        <option value="coconut">Coconut</option>
+                        <option value="mango">Mango</option>
+                    </select>
+                    {errors.algorithm !== "" && <p className="text-red-700 indent-1.5">{errors.algorithm}</p>}
+                </div>
+                
+                <div className="flex flex-col justify-center gap-y-2">
+                    <input
+                        type="text"
+                        placeholder="Password"
+                        name="password"
+                        value={registerDetails.password}
+                        onChange={handleChangeInRegisterDetails}
+                        className="rounded-md bg-[#E8EDDF]"
+                    />
+                    {errors.password !== "" && <p className="text-red-700 indent-1.5">{errors.password}</p>}
+                </div>
+
+                <div className="flex flex-col justify-center gap-y-2">
+                    <input
+                        type="text"
+                        placeholder="Confirm Password"
+                        name="confirmPassword"
+                        value={registerDetails.oonfirmPassword}
+                        onChange={handleChangeInRegisterDetails}
+                        className="rounded-md bg-[#E8EDDF]"
+                    />
+                    {errors.confirmPassword !== "" && <p className="text-red-700 indent-1.5">{errors.confirmPassword}</p>}
+                </div>
+                
+                <button type="submit" className="text-white bg-[#333533] rounded-full">Enter</button>
             </form>
         </React.Fragment>
     );  

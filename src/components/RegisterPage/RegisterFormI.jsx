@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import axios from "../../utils/axios.js";
+import { registerIValidationSchema, postCompanyRegisterIDetails } from "./form-utils.js";
 import routes from "../../utils/routes.js";
 
 const RegisterFormI = () => {
@@ -19,47 +19,56 @@ const RegisterFormI = () => {
         });
     };
 
-    const test = async (companyDetails) => {
-        try {
-            const res = await axios.post(routes.auth.registerI, companyDetails);
-            console.log(res);
-        } catch (err) {
-            console.log(err);            
-        }
-    }
-
     const handleSubmitCompanyDetails = (event) => {
         event.preventDefault();
-        console.log(companyDetails);
-        test(companyDetails);
-    }
+        const formErrors = registerIValidationSchema(companyDetails);
+        console.error(formErrors);
+        
+        if (Object.keys(formErrors).length !== 0) {
+            setErrors(formErrors);
+            console.error(formErrors);
+        } else {
+            // postCompanyRegisterIDetails(routes.auth.registerI, companyDetails);
+        };
+    };
 
     return (
         <React.Fragment>
-            <p className="">Enter Details</p>
             <form
                 onSubmit={handleSubmitCompanyDetails}
-                className="flex flex-col w-full gap-4 bg-red-500"
+                className="flex flex-col w-full gap-y-8"
             >
-                <input
-                    type="text"
-                    placeholder="Application/Company Name"
-                    name="companyName"
-                    value={companyDetails.companyName}
-                    onChange={handleChangeInCompanyDetails}
-                    className="rounded-md bg-[#E8EDDF]"
-                />
+                <p className="text-3xl text-black">Enter Details</p>
 
-                <input
-                    type="text"
-                    placeholder="Application/Company EmailId"
-                    name="companyEmailId"
-                    value={companyDetails.companyEmailId}
-                    onChange={handleChangeInCompanyDetails}
-                    className="bg-[#E8EDDF]"
-                />
+                <div className="flex flex-col justify-center gap-y-8">
+                    <div className="flex flex-col justify-center gap-y-2">
+                        <input
+                            type="text"
+                            placeholder="Application/Company Name"
+                            name="companyName"
+                            value={companyDetails.companyName}
+                            onChange={handleChangeInCompanyDetails}
+                            className="rounded-md bg-[#E8EDDF]"
+                        />
+                        {errors.companyName !== "" && <p className="text-red-700 indent-1.5">{errors.companyName}</p>}
+                    </div>
+
+                    <div className="flex flex-col justify-center gap-y-2">
+                        <input
+                            type="text"
+                            placeholder="Application/Company EmailId"
+                            name="companyEmailId"
+                            value={companyDetails.companyEmailId}
+                            onChange={handleChangeInCompanyDetails}
+                            className="bg-[#E8EDDF]"
+                        />
+                        {errors.companyEmailId !== "" && <p className="text-red-700 indent-1.5">{errors.companyEmailId}</p>}
+                    </div>
+                </div>
                 
-                <button type="submit" className="text-white bg-[#333533] rounded-full">Enter</button>
+                <div>
+                    <button type="submit" className="px-12 text-white bg-[#333533] rounded-full">Enter</button>
+                </div>
             </form>
         </React.Fragment>
     );  

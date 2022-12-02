@@ -8,7 +8,7 @@ const RegisterPageII = () => {
             <div className="h-[100%] w-[40%] flex flex-col justify-center items-center bg-[#333533]">
                 <Welcome />
             </div>
-            <div className="h-[100%] w-[60%] flex flex-col justify-center items-start">
+            <div className="h-[100%] w-[60%] flex flex-col justify-center items-start px-[14%]">
                 <RegisterFormII />
             </div>
         </div>
