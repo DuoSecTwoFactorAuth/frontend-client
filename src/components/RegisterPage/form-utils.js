@@ -28,8 +28,8 @@ const postCompanyRegisterIDetails = async (route, companyDetails) => {
 const registerIIValidationSchema = (values) => {
     const errors = {};
     
-    if (values.otpRefreshDuration) {
-        errors.otpRefreshDuration = 'Please select a refresh time greater than 0 mins';
+    if (!values.otpRefreshDuration) {
+        errors.otpRefreshDuration = 'Please select a refresh time for otp greater than 0 mins';
     };
 
     if (!values.algorithm) {
@@ -42,10 +42,8 @@ const registerIIValidationSchema = (values) => {
 
     if (!values.confirmPassword) {
         errors.confirmPassword = "Confirm Password is required";
-    };
-
-    if (values.password !== values.confirmPassword) {
-        errors.passwordNotMatched = "Password & Confirm Password don't match";
+    } else if (values.password !== values.confirmPassword) {
+        errors.confirmPassword = "Password & Confirm Password don't match";
     };
 
     return errors;

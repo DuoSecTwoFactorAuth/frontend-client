@@ -78,14 +78,17 @@ const RegisterFormII = () => {
                         />
                 </div>
                 
-                <div className="rounded-md flex flex-row justify-between items-center bg-[#E8EDDF] px-4">
-                    <span>OTP Refresh Duration</span>
-                    <div className="flex flex-row items-center py-4 gap-x-4">
-                        <button onClick={decreaseByOne}>-</button>
-                        <span className="">{registerDetails.otpRefreshDuration}</span>
-                        <button onClick={increaseByOne}>+</button>
+                <div className="flex flex-col justify-center gap-y-2">
+                    <div className="rounded-md flex flex-row justify-between items-center bg-[#E8EDDF] px-4">
+                        <span>OTP Refresh Duration</span>
+                        <div className="flex flex-row items-center py-4 gap-x-4">
+                            <button onClick={decreaseByOne}>-</button>
+                            <span className="">{registerDetails.otpRefreshDuration}</span>
+                            <button onClick={increaseByOne}>+</button>
+                        </div>
+                        <span>Mins</span>
                     </div>
-                    <span>Mins</span>
+                    {errors.otpRefreshDuration !== "" && <p className="text-red-700 indent-1.5">{errors.otpRefreshDuration}</p>}
                 </div>
 
                 <div className="flex flex-col justify-center gap-y-2">
