@@ -14,7 +14,7 @@ const Dashboard = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    {data.map(item => {
+                    {/* {data.map(item => {
                         return (
                             <tr>
                                 <td>{item.id}</td>
@@ -24,7 +24,7 @@ const Dashboard = () => {
                                 <td>{item.phone}</td>
                             </tr>
                         );
-                    })}
+                    })} */}
                 </tbody>
             </table>
         </>
