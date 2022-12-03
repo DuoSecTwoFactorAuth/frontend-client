@@ -37,9 +37,9 @@ export const LoginProvider = (props) => {
 
             navigate("/company/dashboard", {replace: true});
         } catch (err) {
-            // if (err.response && err.response.status === 406) {
-            //     setErrors({ password: "You have entered a wrong password" });
-            // }
+            if (err.response && err.response.status === 500) {
+                setErrors({ invalidCredentials: "You have entered either invalid email or password" });
+            }
         }
     }
 

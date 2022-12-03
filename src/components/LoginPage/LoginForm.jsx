@@ -26,14 +26,11 @@ const LoginForm = () => {
         event.preventDefault();
 
         const formErrors = loginValidationSchema(loginDetails);
-        console.log(formErrors);
+        setErrors(formErrors);
         
-        if (Object.keys(formErrors).length !== 0) {
-            setErrors(formErrors);
-            console.error(formErrors);
-        } else {
-            handleLogin(routes.auth.login, loginDetails);
-        };
+        if (Object.keys(formErrors).length === 0) {
+            handleLogin(routes.auth.login, loginDetails, setErrors);
+        }
     }
 
     return (
@@ -74,6 +71,8 @@ const LoginForm = () => {
                 <div className="flex flex-row justify-center">
                     <button type="submit" className="px-12 text-white bg-[#333533] rounded-full">Enter</button>
                 </div>
+
+                {errors.invalidCredentials ? <p className="flex flex-row justify-center text-red-700 indent-1.5">{errors.invalidCredentials}</p>: null}
             </form>
         </>
     )

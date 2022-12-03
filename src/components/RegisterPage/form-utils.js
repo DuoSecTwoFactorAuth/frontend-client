@@ -16,12 +16,12 @@ const registerIValidationSchema = (values) => {
     return errors;
 };
 
-const postCompanyRegisterIDetails = async (route, companyDetails) => {
+const postCompanyRegisterIDetails = async (route, companyDetails, setMailSent) => {
     try {
         const res = await axios.post(route, companyDetails);
-        const data = await res.data;
-        console.log(res);
-        console.log(data);
+        if (res.status === 201) {
+            setMailSent(true);
+        }        
     } catch (err) {
         console.log(err);
     }
@@ -30,7 +30,7 @@ const postCompanyRegisterIDetails = async (route, companyDetails) => {
 const registerIIValidationSchema = (values) => {
     const errors = {};
     
-    if (!values.otpRefreshDuration) {
+    if (values.otpRefreshDuration <= 0) {
         errors.otpRefreshDuration = 'Please select a refresh time for otp greater than 0 mins';
     };
 
@@ -51,9 +51,12 @@ const registerIIValidationSchema = (values) => {
     return errors;
 };
 
-const postCompanyRegisterIIDetails = async (route, companyDetails) => {
+const postCompanyRegisterIIDetails = async (route, companyDetails, setRegisterConfirmMsg) => {
     try {
-        await axios.post(route, companyDetails);
+        const res = await axios.post(route, companyDetails);
+        if (res.status === 201) {
+            setRegisterConfirmMsg("You have been successfully registered. Click below to proceed to login.");
+        }
     } catch (err) {
         console.log(err);
     }
@@ -66,8 +69,8 @@ const getCompanyDetails = async (route, companyUniqueId, setCompanyDetails) => {
                 uniqueId: companyUniqueId
             }
         });
-        
-        if (res.statusText === "OK") {
+       
+        if (res.status === 200) {
             const companyDetails = await res.data;
             setCompanyDetails(companyDetails);
         }

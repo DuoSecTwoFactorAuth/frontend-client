@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { useLocation, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import { registerIIValidationSchema, postCompanyRegisterIIDetails, getCompanyDetails } from "./form-utils.js"
 import routes from "../../utils/routes.js";
 
 const RegisterFormII = () => {
-    const [searchParams, setSearchParams] = useSearchParams();
+    const [searchParams] = useSearchParams();
     
+    const [registerConfirmMsg, setRegisterConfirmMsg] = useState("");
+
     const [companyDetails, setCompanyDetails] = useState({
         companyName: "",
         companyEmailId: ""
@@ -13,7 +15,7 @@ const RegisterFormII = () => {
 
     const [registerCompanyDetails, setRegisterCompanyDetails] = useState({
         otpRefreshDuration: 0,
-        algorithm: "default",
+        algorithm: "",
         password: "",
         confirmPassword: "",
         companyUniqueId: searchParams.get('uniqueId')
@@ -28,7 +30,7 @@ const RegisterFormII = () => {
 
     useEffect(() => {
         getCompanyDetails(routes.companyDetails.getDetails, searchParams.get('uniqueId'), setCompanyDetails);
-    }, []);
+    }, [searchParams]);
 
     const handleChangeInRegisterDetails = (event) => {
         setRegisterCompanyDetails((previousState) => {
@@ -38,19 +40,18 @@ const RegisterFormII = () => {
 
     const handleSubmitCompanyDetails = (event) => {
         event.preventDefault();
-        // const formErrors = registerIIValidationSchema(companyDetails);
-        // console.error(formErrors);
         
         delete registerCompanyDetails["confirmPassword"];
-        postCompanyRegisterIIDetails(routes.auth.registerII, registerCompanyDetails);
-        
+        postCompanyRegisterIIDetails(routes.auth.registerII, registerCompanyDetails, setRegisterConfirmMsg);
 
-        // if (Object.keys(formErrors).length !== 0) {
-        //     setErrors(formErrors);
-        //     console.error(formErrors);
-        // } else {
-        //     postCompanyRegisterIIDetails(routes.auth.registerI, companyDetails);
-        // };
+        // const formErrors = registerIIValidationSchema(companyDetails);
+        // console.log(formErrors);
+        // setErrors(formErrors);
+
+        // if (Object.keys(formErrors).length === 0) {
+        //     delete registerCompanyDetails["confirmPassword"];
+        //     postCompanyRegisterIIDetails(routes.auth.registerII, registerCompanyDetails);
+        // } 
     };
 
     const decreaseByOne = () => {
@@ -74,6 +75,7 @@ const RegisterFormII = () => {
             <form
                 onSubmit={handleSubmitCompanyDetails}
                 className="flex flex-col w-full gap-y-8"
+                noValidate
             >
                 <div>
                     <p className="text-3xl text-black">Enter Details For</p>
@@ -99,7 +101,7 @@ const RegisterFormII = () => {
                         </div>
                         <span>Mins</span>
                     </div>
-                    {errors.otpRefreshDuration !== "" && <p className="text-red-700 indent-1.5">{errors.otpRefreshDuration}</p>}
+                    {errors.otpRefreshDuration !== "" ? <p className="text-red-700 indent-1.5">{errors.otpRefreshDuration}</p> : null}
                 </div>
 
                 <div className="flex flex-col justify-center gap-y-2">
@@ -109,7 +111,7 @@ const RegisterFormII = () => {
                         <option value="SHA256">SHA 256</option>
                         <option value="SHA512">SHA 512</option>
                     </select>
-                    {errors.algorithm !== "" && <p className="text-red-700 indent-1.5">{errors.algorithm}</p>}
+                    {errors.algorithm !== "" ? <p className="text-red-700 indent-1.5">{errors.algorithm}</p> : null}
                 </div>
                 
                 <div className="flex flex-col justify-center gap-y-2">
@@ -121,7 +123,7 @@ const RegisterFormII = () => {
                         onChange={handleChangeInRegisterDetails}
                         className="rounded-md bg-[#E8EDDF]"
                     />
-                    {errors.password !== "" && <p className="text-red-700 indent-1.5">{errors.password}</p>}
+                    {errors.password !== "" ? <p className="text-red-700 indent-1.5">{errors.password}</p> : null}
                 </div>
 
                 <div className="flex flex-col justify-center gap-y-2">
@@ -133,10 +135,18 @@ const RegisterFormII = () => {
                         onChange={handleChangeInRegisterDetails}
                         className="rounded-md bg-[#E8EDDF]"
                     />
-                    {errors.confirmPassword !== "" && <p className="text-red-700 indent-1.5">{errors.confirmPassword}</p>}
+                    {errors.confirmPassword !== "" ? <p className="text-red-700 indent-1.5">{errors.confirmPassword}</p> : null}
                 </div>
                 
                 <button type="submit" className="text-white bg-[#333533] rounded-full">Enter</button>
+
+                {registerConfirmMsg !== ""
+                    ? (<div className="flex flex-col ">
+                        <p>{registerConfirmMsg}</p>
+                        <button className="">Proceed to Login</button>
+                    </div>)
+                    : null
+                }
             </form>
         </React.Fragment>
     );  
