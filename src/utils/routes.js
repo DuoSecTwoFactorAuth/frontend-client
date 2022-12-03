@@ -2,7 +2,7 @@ const routes = {
     auth: {
         login: "auth/login",
         registerI: "auth/company-register",
-        registerII: "",
+        registerII: "auth/store-company-details",
         forgotPassword: "auth/forgot-password"
     }, 
     companyDetails: {

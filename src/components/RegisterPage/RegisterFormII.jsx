@@ -1,49 +1,60 @@
 import React, { useState, useEffect } from "react";
-import { registerIIValidationSchema, postCompanyRegisterIIDetails } from "./form-utils.js"
+import { useLocation, useSearchParams } from "react-router-dom";
+import { registerIIValidationSchema, postCompanyRegisterIIDetails, getCompanyDetails } from "./form-utils.js"
 import routes from "../../utils/routes.js";
 
 const RegisterFormII = () => {
+    const [searchParams, setSearchParams] = useSearchParams();
+    
     const [companyDetails, setCompanyDetails] = useState({
-        companyName: "Example",
-        companyEmailId: "example@gmail.com"
+        companyName: "",
+        companyEmailId: ""
     });
 
-    const [registerDetails, setRegisterDetails] = useState({
+    const [registerCompanyDetails, setRegisterCompanyDetails] = useState({
         otpRefreshDuration: 0,
         algorithm: "default",
         password: "",
         confirmPassword: "",
-        companyUniqueId: ""
+        companyUniqueId: searchParams.get('uniqueId')
     });
 
-    const [errors, setErrors] = useState({ 
+    const [errors, setErrors] = useState({
         otpRefreshDuration: "",
         algorithm: "",
         password: "",
         confirmPassword: "",
-    })
+    });
+
+    useEffect(() => {
+        getCompanyDetails(routes.companyDetails.getDetails, searchParams.get('uniqueId'), setCompanyDetails);
+    }, []);
 
     const handleChangeInRegisterDetails = (event) => {
-        setRegisterDetails((previousState) => {
+        setRegisterCompanyDetails((previousState) => {
             return { ...previousState, [event.target.name]: event.target.value };
         });
     };
 
     const handleSubmitCompanyDetails = (event) => {
         event.preventDefault();
-        const formErrors = registerIIValidationSchema(companyDetails);
-        console.error(formErrors);
+        // const formErrors = registerIIValidationSchema(companyDetails);
+        // console.error(formErrors);
         
-        if (Object.keys(formErrors).length !== 0) {
-            setErrors(formErrors);
-            console.error(formErrors);
-        } else {
-            // postCompanyRegisterIIDetails(routes.auth.registerI, companyDetails);
-        };
+        delete registerCompanyDetails["confirmPassword"];
+        postCompanyRegisterIIDetails(routes.auth.registerII, registerCompanyDetails);
+        
+
+        // if (Object.keys(formErrors).length !== 0) {
+        //     setErrors(formErrors);
+        //     console.error(formErrors);
+        // } else {
+        //     postCompanyRegisterIIDetails(routes.auth.registerI, companyDetails);
+        // };
     };
 
     const decreaseByOne = () => {
-        setRegisterDetails((previousState) => {
+        setRegisterCompanyDetails((previousState) => {
             if (previousState.otpRefreshDuration > 0) {
                 return { ...previousState, otpRefreshDuration: previousState.otpRefreshDuration - 1 };
             }
@@ -53,7 +64,7 @@ const RegisterFormII = () => {
     }
 
     const increaseByOne = () => {
-        setRegisterDetails((previousState) => {
+        setRegisterCompanyDetails((previousState) => {
             return { ...previousState, otpRefreshDuration: previousState.otpRefreshDuration + 1 };
         });
     }
@@ -66,13 +77,13 @@ const RegisterFormII = () => {
             >
                 <div>
                     <p className="text-3xl text-black">Enter Details For</p>
-                    <p className="text-3xl text-black">{companyDetails.companyName}</p>
+                    <p className="text-3xl text-black">{companyDetails.companyName || "Example"}</p>
                 </div>
 
                 <div className="flex flex-col justify-center gap-y-2">
                     <input
                         type="email"
-                        value={companyDetails.companyEmailId}
+                        value={companyDetails.companyEmailId || "example@example.com"} 
                         disabled={true}
                         className="rounded-md bg-[#E8EDDF]"
                         />
@@ -83,7 +94,7 @@ const RegisterFormII = () => {
                         <span>OTP Refresh Duration</span>
                         <div className="flex flex-row items-center py-4 gap-x-4">
                             <button onClick={decreaseByOne}>-</button>
-                            <span className="">{registerDetails.otpRefreshDuration}</span>
+                            <span className="">{registerCompanyDetails.otpRefreshDuration}</span>
                             <button onClick={increaseByOne}>+</button>
                         </div>
                         <span>Mins</span>
@@ -92,12 +103,11 @@ const RegisterFormII = () => {
                 </div>
 
                 <div className="flex flex-col justify-center gap-y-2">
-                    <select className="rounded-md" name="algorithm" value={registerDetails.algorithm} onChange={handleChangeInRegisterDetails}>
+                    <select className="rounded-md" name="algorithm" value={registerCompanyDetails.algorithm} onChange={handleChangeInRegisterDetails}>
                         <option value="">Select your algorithm</option>
-                        <option value="grapefruit">Grapefruit</option>
-                        <option value="lime">Lime</option>
-                        <option value="coconut">Coconut</option>
-                        <option value="mango">Mango</option>
+                        <option value="SHA1">SHA 1</option>
+                        <option value="SHA256">SHA 256</option>
+                        <option value="SHA512">SHA 512</option>
                     </select>
                     {errors.algorithm !== "" && <p className="text-red-700 indent-1.5">{errors.algorithm}</p>}
                 </div>
@@ -107,7 +117,7 @@ const RegisterFormII = () => {
                         type="text"
                         placeholder="Password"
                         name="password"
-                        value={registerDetails.password}
+                        value={registerCompanyDetails.password}
                         onChange={handleChangeInRegisterDetails}
                         className="rounded-md bg-[#E8EDDF]"
                     />
@@ -119,7 +129,7 @@ const RegisterFormII = () => {
                         type="text"
                         placeholder="Confirm Password"
                         name="confirmPassword"
-                        value={registerDetails.oonfirmPassword}
+                        value={registerCompanyDetails.confirmPassword}
                         onChange={handleChangeInRegisterDetails}
                         className="rounded-md bg-[#E8EDDF]"
                     />

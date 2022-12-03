@@ -48,7 +48,14 @@ const LandingPage = () => {
                             <span className="block">Secure your applications with us by implementing</span>
                             <span className="block">two factor authentication the easy way!</span>
                         </p>
-                        <button className="w-fit px-8 bg-[#333533] text-white rounded-2xl">Get Started</button>
+                        <button
+                            className="w-fit px-8 bg-[#333533] text-white rounded-2xl"
+                            onClick={() => {
+                                navigate("/registration-basic-details");
+                            }}
+                        >
+                            Get Started
+                        </button>
                     </div> 
                 </div>
                 <div className="w-[50%] flex flex-row justify-center items-center">

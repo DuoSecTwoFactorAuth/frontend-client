@@ -6,10 +6,10 @@ const LoginPage = () => {
     return (
         <div className="w-screen h-screen flex flex-row justify-between">
             <div className="h-[100%] w-[60%]">
-                <div className="w-[100%]">
-                    <img src={duosecLogo} className="px-8 py-8" />
+                <div className="w-[100%] h-[12%]">
+                    <img src={duosecLogo} className="px-4 py-4" />
                 </div>
-                <div className="h-[] flex flex-row justify-center"> 
+                <div className="w-[100%] h-[88%] flex flex-col justify-center"> 
                     <LoginForm />
                 </div>
             </div>

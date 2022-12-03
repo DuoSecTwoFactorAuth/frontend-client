@@ -19,7 +19,9 @@ const registerIValidationSchema = (values) => {
 const postCompanyRegisterIDetails = async (route, companyDetails) => {
     try {
         const res = await axios.post(route, companyDetails);
+        const data = await res.data;
         console.log(res);
+        console.log(data);
     } catch (err) {
         console.log(err);
     }
@@ -51,11 +53,27 @@ const registerIIValidationSchema = (values) => {
 
 const postCompanyRegisterIIDetails = async (route, companyDetails) => {
     try {
-        const res = await axios.post(route, companyDetails);
-        console.log(res);
+        await axios.post(route, companyDetails);
     } catch (err) {
         console.log(err);
     }
 };
 
-export { registerIValidationSchema, postCompanyRegisterIDetails, registerIIValidationSchema, postCompanyRegisterIIDetails };
+const getCompanyDetails = async (route, companyUniqueId, setCompanyDetails) => {
+    try {
+        const res = await axios.get(route, {
+            params: {
+                uniqueId: companyUniqueId
+            }
+        });
+        
+        if (res.statusText === "OK") {
+            const companyDetails = await res.data;
+            setCompanyDetails(companyDetails);
+        }
+    } catch (err) {
+        console.log(err);
+    }
+}
+
+export { registerIValidationSchema, postCompanyRegisterIDetails, registerIIValidationSchema, postCompanyRegisterIIDetails, getCompanyDetails };

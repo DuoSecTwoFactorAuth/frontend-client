@@ -1,45 +1,81 @@
-import React from "react";
-import { Formik, Form, Field, ErrorMessage } from 'formik';
-import { loginValidationSchema, sendLoginDetails, onSubmitLoginDetails } from "./form-utils";
+import React, { useState, useContext } from "react";
+import { LoginContext } from "../../contexts/LoginContext.jsx" 
+import { loginValidationSchema } from "./form-utils";
+import routes from "../../utils/routes.js";
 
 const LoginForm = () => {
+    const { handleLogin } = useContext(LoginContext);
+
+    const [loginDetails, setLoginDetails] = useState({
+        companyEmailId: "",
+        password: ""
+    });
+
+    const [errors, setErrors] = useState({
+        companyEmailId: "",
+        password: ""
+    });
+
+    const handleLoginDetails = (event) => {
+        setLoginDetails((previousState) => {
+            return { ...previousState, [event.target.name]: event.target.value }
+        })
+    };
+
+    const submitLoginDetails = (event) => {
+        event.preventDefault();
+
+        const formErrors = loginValidationSchema(loginDetails);
+        console.log(formErrors);
+        
+        if (Object.keys(formErrors).length !== 0) {
+            setErrors(formErrors);
+            console.error(formErrors);
+        } else {
+            handleLogin(routes.auth.login, loginDetails);
+        };
+    }
+
     return (
-        <div className="h-[70%] w-[70%]">
-            <p className="text-center text-[#343634] text-2xl font-famil font-semibold">LOGIN</p>
-                <Formik
-                    initialValues={{ email: '', password: '' }}
-                    validationSchema={loginValidationSchema}
-                    onSubmit={(values, { setSubmitting }) => {
-                        console.log(values);
-                    }}
-                > 
-                <Form>
-                    <div className="flex flex-col gap-8">
-                        <div className="flex flex-col gap-4">
-                            <Field
-                                type="email"
-                                placeholder="Enter Registered Email ID"
-                                name="email"
-                                className="rounded-md mx-12 bg-[#E8EDDF]"
-                            />
-                            <ErrorMessage name="email" className="mx-12 my-12 bg-red-500" />
-                        </div>
+        <>
+            <form
+                className="w-full h-full px-[20%] flex flex-col gap-y-4 justify-center"
+                onSubmit={submitLoginDetails}
+                noValidate
+            >
+                <p className="flex flex-row justify-center text-3xl text-[#343634] ">Login</p>
 
-                        <div className="flex flex-col">
-                            <Field
-                                type="password"
-                                placeholder="Enter Password"
-                                name="password"
-                                className="rounded-md mx-12 bg-[#E8EDDF]"
-                            />
-                            <ErrorMessage name="password" className="mx-12 my-12" />
-                        </div>
-
-                        <button type='submit' className="w-fit self-center bg-[#333533] text-white rounded-full px-12">Enter</button>
+                <div className="flex flex-col justify-center gap-y-4">
+                    <div className="flex flex-col justify-center gap-y-2">
+                        <input
+                            type="email"
+                            placeholder="Registered Email ID"
+                            name="companyEmailId"
+                            value={loginDetails.companyEmailId}
+                            onChange={handleLoginDetails}
+                            className="rounded-md bg-[#E8EDDF]"
+                        />
+                        {errors.companyEmailId !== "" ? <p className="text-red-700 indent-1.5">{errors.companyEmailId}</p>: null}
                     </div>
-                </Form>
-            </Formik>
-        </div>
+
+                    <div className="flex flex-col justify-center gap-y-2">
+                        <input
+                            type="password"
+                            placeholder="Password"
+                            name="password"
+                            value={loginDetails.password}
+                            onChange={handleLoginDetails}
+                            className="rounded-md bg-[#E8EDDF]"
+                        />
+                        {errors.password !== "" ? <p className="text-red-700 indent-1.5">{errors.password}</p>: null}
+                    </div>
+                </div>
+
+                <div className="flex flex-row justify-center">
+                    <button type="submit" className="px-12 text-white bg-[#333533] rounded-full">Enter</button>
+                </div>
+            </form>
+        </>
     )
 }
 
