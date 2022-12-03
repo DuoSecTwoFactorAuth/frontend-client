@@ -1,42 +1,17 @@
-import * as Yup from 'yup';
-import axios from "axios";
+const loginValidationSchema = (values) => {
+    const errors = {};
+    
+    if (!values.companyEmailId) {
+        errors.companyEmailId = 'Company EmailId is required';
+    } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.companyEmailId)) {
+        errors.companyEmailId = 'Invalid email address';
+    };
 
-const loginValidationSchema = Yup.object({
-    email: Yup.string()
-        .email('Invalid Email Format')
-        .required('Required'),
-    password: Yup.string().required('Required')
-});
+    if (!values.password) {
+        errors.password = "Password is required";
+    };
 
-const sendLoginDetails = async (loginDetails) => {
-    try {
-        const resp = await axios.post('https://jsonplaceholder.typicode.com/posts', loginDetails);
-        console.log(resp.data);
-    } catch (err) {
-        // Handle Error Here
-        console.error(err);
-    }
+    return errors;
 };
 
-const onSubmit=(values, { setSubmitting }) => {
-                    // setTimeout(() => {
-                    //     alert(JSON.stringify(values, null, 2));
-                    //     setSubmitting(false);
-                    // }, 400)
-                    console.log(values);
-                }
-
-const onSubmitLoginDetails = () => {
-    // const onSubmitLogin = (event) => {
-    //     event.preventDefault();
-    //     console.log("fhvivf");
-    //     try {
-    //         console.log(login);
-    //         sendLoginDetails();
-    //     } catch (error) {
-    //         console.error(error);
-    //     }
-    // };
-}
-
-export { loginValidationSchema, sendLoginDetails, onSubmitLoginDetails };
+export { loginValidationSchema };

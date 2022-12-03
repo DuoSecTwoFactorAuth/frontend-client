@@ -64,7 +64,7 @@ const RegisterFormI = () => {
                             name="companyEmailId"
                             value={companyDetails.companyEmailId}
                             onChange={handleChangeInCompanyDetails}
-                            className="bg-[#E8EDDF]"
+                            className="rounded-md bg-[#E8EDDF]"
                         />
                         {errors.companyEmailId !== "" && <p className="text-red-700 indent-1.5">{errors.companyEmailId}</p>}
                     </div>
