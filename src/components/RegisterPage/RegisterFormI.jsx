@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { registerIValidationSchema, postCompanyRegisterIDetails } from "./form-utils.js";
 import routes from "../../utils/routes.js";
 
 const RegisterFormI = () => {
+    const [isMailSent, setMailSent] = useState(false);
+
     const [companyDetails, setCompanyDetails] = useState({
         companyName: "",
         companyEmailId: ""
@@ -21,15 +23,17 @@ const RegisterFormI = () => {
 
     const handleSubmitCompanyDetails = (event) => {
         event.preventDefault();
-        const formErrors = registerIValidationSchema(companyDetails);
-        console.error(formErrors);
+        // const formErrors = registerIValidationSchema(companyDetails);
+        // console.error(formErrors);
         
-        if (Object.keys(formErrors).length !== 0) {
-            setErrors(formErrors);
-            console.error(formErrors);
-        } else {
-            // postCompanyRegisterIDetails(routes.auth.registerI, companyDetails);
-        };
+        postCompanyRegisterIDetails(routes.auth.registerI, companyDetails);
+        setMailSent(true);
+        // if (Object.keys(formErrors).length !== 0) {
+        //     setErrors(formErrors);
+        //     console.error(formErrors);
+        // } else {
+        //     // postCompanyRegisterIDetails(routes.auth.registerI, companyDetails);
+        // };
     };
 
     return (
@@ -69,6 +73,8 @@ const RegisterFormI = () => {
                 <div>
                     <button type="submit" className="px-12 text-white bg-[#333533] rounded-full">Enter</button>
                 </div>
+
+                {isMailSent ? <p className="text-red-700">*You have successfully registered. Please check your email for further steps</p> : null}
             </form>
         </React.Fragment>
     );  
