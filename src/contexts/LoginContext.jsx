@@ -1,12 +1,12 @@
 import React, { useState, useEffect, createContext } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";  
 import axios from "../utils/axios.js";
 
 export const LoginContext = createContext({
   authStatus: false,
   compData: null,
   setUserAuthStatus: () => {},
-  setUser: () => {},
+  setCompData: () => {},
   handleLogin: () => {},
   handleLogout: () => {},
 });
@@ -17,22 +17,25 @@ export const LoginProvider = (props) => {
 
     const navigate = useNavigate();
 
-    // useEffect(() => {
-        
-    // }, [userAuthStatus, user]);
+    useEffect(() => {
+        const compData = JSON.parse(sessionStorage.getItem("auth"));
+        if (compData !== null) {
+            setAuthStatus(true);
+            setCompData(compData);
+        }
+    }, []);
 
     async function handleLogin(url, payload, setErrors) {
         try {
             const res = await axios.post(url, payload);
             const compData = await res.data;
             
-            console.log(compData);
             sessionStorage.setItem("auth", JSON.stringify(compData));
 
             setAuthStatus(true);
             setCompData(compData);
 
-            navigate("/dashboard", {replace: true});
+            navigate("/company/dashboard", {replace: true});
         } catch (err) {
             // if (err.response && err.response.status === 406) {
             //     setErrors({ password: "You have entered a wrong password" });

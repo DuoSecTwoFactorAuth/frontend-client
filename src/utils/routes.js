@@ -7,6 +7,10 @@ const routes = {
     }, 
     companyDetails: {
         getDetails: "auth/get-company-details",
+    },
+    settings: {
+        getApiKey: "settings/get-api-key",
+        changePassword: "settings/change-password"
     }
 };
 
