@@ -1,4 +1,5 @@
 import React, { useState, useContext } from 'react';
+import { ToastContainer, toast } from "react-toastify";
 import AddEmployeeModal from "../components/DashboardPage/AddEmployeeModal.jsx";
 import { LoginContext } from "../contexts/LoginContext.jsx";
 
@@ -47,7 +48,10 @@ const Dashboard = () => {
                 setShowAddEmpModal={setShowAddEmpModal}
                 companyUniqueId={compData.companyUniqueId}
                 jwtToken={compData.token}
+                toast={toast}
             />
+
+            <ToastContainer />
         </>
     );
 };
