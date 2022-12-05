@@ -46,6 +46,7 @@ const Settings = () => {
     });
     
     const { authStatus, compData } = useContext(LoginContext);
+    console.log(authStatus, compData);
 
     useEffect(() => {
         if (authStatus && compData !== null) {
@@ -153,7 +154,7 @@ const Settings = () => {
     return (
         <>
         <div className="w-screen h-screen flex flex-col px-[15%]">
-            <p className="py-4 text-5xl border-b-2 border-b-solid border-[#7C7C7C]">{"Example Group"}</p>
+            <p className="py-4 text-5xl border-b-2 border-b-solid border-[#7C7C7C]">{compData.companyName}</p>
             <div className="flex flex-col gap-16">
                 <div className="mt-16 flex flex-row">
                     <p className="pr-[30%] text-3xl border-r-2 border-r-solid border-[#7C7C7C]">API Key</p>

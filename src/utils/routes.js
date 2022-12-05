@@ -11,6 +11,9 @@ const routes = {
     settings: {
         getApiKey: "settings/get-api-key",
         changePassword: "settings/change-password"
+    },
+    dashboard: {
+        addEmployee: "/add-employee-from -ui"
     }
 };
 
