@@ -1,5 +1,7 @@
 import React, {useState, useEffect, useContext} from "react";
 import copy from "copy-to-clipboard";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { LoginContext } from "../contexts/LoginContext.jsx";
 import axios from "../utils/axios.js";
 import routes from "../utils/routes.js";
@@ -15,13 +17,13 @@ const passwordValidationSchema = (values) => {
 
     if (!values.newPassword) {
         errors.newPassword = "New password is required";
-    } else if (values.oldPassword !== "" && values.newPassword === values.oldPassword) {
+    } else if (values.oldPassword !== "" && values.newPassword !== "" && values.newPassword === values.oldPassword) {
         errors.newPassword = "Your new password is same as your old password";
     }
 
     if (!values.confirmNewPassword) {
         errors.confirmNewPassword = "Please retype your new password";
-    } else if (values.newPassword !== "" && values.confirmNewPassword !== values.newPassword) {
+    } else if (values.newPassword !== "" && values.confirmNewPassword !== "" && values.confirmNewPassword !== values.newPassword) {
         errors.confirmNewPassword = "Your retyped password is not as same as your new password";
     }
 
@@ -77,10 +79,19 @@ const Settings = () => {
 
     const copyToClipboard = () => {
         copy(apiKey);
-        alert(`You have copied API KEY: "${apiKey}" to clipboard.`);
+        toast.success(`Copied to clipboard.`, {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+        });
     }
 
-    const changePassword = async(route, jwtToken, password) => {
+    const changePassword = async(route, jwtToken, password, toast) => {
         try {
             const res = await axios.post(route, password, {
                 headers: {
@@ -88,11 +99,31 @@ const Settings = () => {
                 }
             });
 
-            if (res.statusCode === 200) {
-                console.log("Password is successfully Changed");
+            if (res.status === 200) {
+                toast.success("Your password has been successfully changed", {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                });
             }
         } catch (err) {
-            console.log(err);
+            if (err.response && err.response.status === 500) {
+                toast.error('You have entered wrong current password. Please try again.', {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                });
+            }
         }
     }
 
@@ -108,17 +139,19 @@ const Settings = () => {
         const formErrors = passwordValidationSchema(password);
         setErrors(formErrors);
         
-        delete password["confirmNewPassword"];
-        password["companyUniqueId"] = compData.companyUniqueId;
-        
         if (Object.keys(formErrors).length === 0) {
-            console.log(formErrors);
-            console.log(password);
-            changePassword(routes.settings.changePassword, compData.token, password);
+            // creating deep copy of password obj
+            const changePasswordDetails = JSON.parse(JSON.stringify(password));
+            
+            delete changePasswordDetails["confirmNewPassword"];
+            changePasswordDetails["companyUniqueId"] = compData.companyUniqueId;
+            
+            changePassword(routes.settings.changePassword, compData.token, changePasswordDetails, toast);
         }
     }
 
     return (
+        <>
         <div className="w-screen h-screen flex flex-col px-[15%]">
             <p className="py-4 text-5xl border-b-2 border-b-solid border-[#7C7C7C]">{"Example Group"}</p>
             <div className="flex flex-col gap-16">
@@ -148,7 +181,7 @@ const Settings = () => {
                             <div className="flex flex-col gap-y-4">
                                 <input
                                     type="password"
-                                    placeholder="Old Password"
+                                    placeholder="Current Password"
                                     name="oldPassword"
                                     value={password.oldPassword}
                                     onChange={handleChangePassword}
@@ -186,6 +219,8 @@ const Settings = () => {
                 </div>
             </div>
         </div>
+        <ToastContainer />
+        </>
     )
 }
 
