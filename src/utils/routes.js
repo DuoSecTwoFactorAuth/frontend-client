@@ -1,4 +1,5 @@
 const routes = {
+<<<<<<< HEAD
   auth: {
     login: "auth/login",
     registerI: "auth/company-register",
@@ -17,7 +18,7 @@ const routes = {
   },
   qrCode: {
     getQRCode: "/get-qr-code?companyEmployeeHash=",
-  },
+  }
 };
 
 export default routes;

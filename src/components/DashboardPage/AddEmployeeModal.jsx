@@ -105,7 +105,7 @@ const AddEmployeeModal = ({ showAddEmpModal, setShowAddEmpModal, companyUniqueId
                         <input
                             type="tel"
                             placeholder="Employee Phone No"
-                            maxlength="10"
+                            maxLength="10"
                             className="rounded-md bg-[#D9D9D9]"          
                             name="phoneNumber"          
                             value={empDetails.phoneNumber}      
