@@ -46,7 +46,6 @@ const Settings = () => {
     });
     
     const { authStatus, compData } = useContext(LoginContext);
-    console.log(authStatus, compData);
 
     useEffect(() => {
         if (authStatus && compData !== null) {

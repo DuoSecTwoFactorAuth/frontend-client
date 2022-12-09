@@ -1,5 +1,4 @@
 const routes = {
-<<<<<<< HEAD
   auth: {
     login: "auth/login",
     registerI: "auth/company-register",

@@ -6,6 +6,7 @@ import Pagination from '../components/DashboardPage/Pagination.jsx';
 import AddEmployeeModal from "../components/DashboardPage/AddEmployeeModal.jsx";
 import axios from "../utils/axios.js";
 import routes from "../utils/routes.js";
+import plusLogo from "../assets/logos/plus.svg";
 
 const getAllEmployees = async (route, jwtToken, companyUniqueId, pageNo, setEmployeesDetails, setPageDetails) => {
     try {
@@ -38,9 +39,34 @@ const getAllEmployees = async (route, jwtToken, companyUniqueId, pageNo, setEmpl
     }
 }
 
+const deleteEmployee = async(route, jwtToken, companyUniqueId, employeeId, toast) => {
+    try {
+        await axiosInstance.delete(route, {
+            headers: {
+                "Authorization": `Bearer ${jwtToken}`,
+            },
+            data: {
+                "companyUniqueId": companyUniqueId,
+                "employeeId": employeeId                
+            }
+        });
+        
+        toast.success(`Employee with Employee Id ${use} is successfully deleted.`, {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: false,
+            draggable: true,
+            progress: undefined,
+        });                                               
+    } catch (err) {
+        console.error(err);
+    }
+};
+
 const Dashboard = () => {
     const { authStatus, compData } = useContext(LoginContext);
-    console.log(authStatus, compData);
     
     const [showAddEmpModal, setShowAddEmpModal] = useState(false);
 
@@ -93,22 +119,32 @@ const Dashboard = () => {
 
     return (
         <>
-            <EmployeeTable employees={employeesDetails} />    
+            <div className="flex flex-col justify-center items-center gap-y-8">
+                <EmployeeTable
+                    employees={employeesDetails}
+                    jwtToken={compData.token}
+                    companyUniqueId={compData.companyUniqueId}
+                    deleteEmployee={deleteEmployee}
+                    toast={toast}
+                />    
 
-            <button
-                className="bg-pink-500 text-white active:bg-pink-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                type="button"
-                onClick={() => setShowAddEmpModal(true)}
-            >
-                Open Add Employee modal
-            </button>
+                <div className="w-[75%] h-fit py-4 bg-red-500 flex flex-row justify-between items-center">
+                    <Pagination
+                        totalPages={pageDetails.totalPages}
+                        onPreviousPage={onPreviousPage}
+                        onPageChange={onPageChange}
+                        onNextPage={onNextPage}
+                    />
 
-            <Pagination
-                totalPages={pageDetails.totalPages}
-                onPreviousPage={onPreviousPage}
-                onPageChange={onPageChange}
-                onNextPage={onNextPage}
-            />
+                    <button
+                        className="ml-auto bg-[#D9D9D9] shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 rounded-full"
+                        type="button"
+                        onClick={() => setShowAddEmpModal(true)}
+                    >
+                        <img src={plusLogo} className="w-6 h-8" />
+                    </button>
+                </div>
+            </div>
 
             <AddEmployeeModal
                 showAddEmpModal={showAddEmpModal}

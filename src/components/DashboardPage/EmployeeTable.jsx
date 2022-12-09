@@ -1,66 +1,72 @@
 import React, { useState } from "react";
 import DeleteEmployeeModal from "./DeleteEmployeeModal.jsx";
+import routes from "../../utils/routes.js";
 
-const EmployeeTable = ({ employees }) => {
-    const [employeeForDeletion, setEmployeeForDeletion] = useState({});
+const EmployeeTable = ({ employees, jwtToken, companyUniqueId, deleteEmployee, toast }) => {
+    const [isDeleteModalOpened, setDeleteModalOpened] = useState(false);
 
-    const btnHandleEmployeeDeletion = (employee) => {
-        setEmployeeForDeletion(employee);
+    const [employeeForDeletion, setEmployeeForDeletion] = useState({
+        companyUniqueId: companyUniqueId,
+        employeeId: ""
+    });
+
+    const handleDeleteEmployeeBtn = (employeeId) => {
+        setEmployeeForDeletion((previousState) => {
+            return { ...previousState, employeeId: employeeId}
+        });
         setDeleteModalOpened(true);
     };
 
-    const handleEmployeeDeleteModalBtn = (event) => {
-        if (Object.keys(studentForDeletion).length !== 0) {
-            deleteStudent(event, studentForDeletion.username, setDeleteModalOpened);
-        }
+    const handleDeleteEmployeeModalBtn = (employeeId) => {
+        deleteEmployee(routes.dashboard.deleteEmployee, jwtToken, companyUniqueId, employeeId, toast)
     };
 
     return (
         <>
             <div className="w-[75%] overflow-x-auto shadow-md sm:rounded-lg mt-12 self-center">
-                <table className="w-full text-xl text-left text-gray-500 dark:text-gray-400">
-                    <thead className="text-xl bg-[#D9D9D9] text-black uppercase">
-                        <tr>
-                            <th scope="col" className="px-6 py-3">
+                <table className="w-full text-left text-gray-500 dark:text-gray-400 gap-y-2">
+                    <thead className="text-md bg-[#D9D9D9] text-black uppercase">
+                        <tr className="mb-8">
+                            <th scope="col" className="px-4 py-3">
                                 Employee Id
                             </th>
-                            <th scope="col" className="px-6 py-3">
+                            <th scope="col" className="px-4 py-3">
                                 Employee Name
                             </th>
-                            <th scope="col" className="px-6 py-3">
+                            <th scope="col" className="px-4 py-3">
                                 Email ID
                             </th>
-                            <th scope="col" className="px-6 py-3">
+                            <th scope="col" className="px-4 py-3">
                                 Contact Number
                             </th>
-                            <th scope="col" className="px-6 py-3">
+                            <th scope="col" className="px-4 py-3">
                                 <span>Renew</span>
                             </th>
-                            <th scope="col" className="px-6 py-3">
+                            <th scope="col" className="px-4 py-3">
                                 <span>Delete Employee</span>
                             </th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody className="">
                         {employees.map((employee) => (
                             <tr
                                 key={employee.employeeId}
-                                className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
+                                className="bg-[#D9D9D9] border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
                             >
                                 <th
                                     scope="row"
-                                    className="px-6 py-4 font-medium text-[#333333] whitespace-nowrap"
+                                    className="px-4 py-3 font-medium text-[#333333] whitespace-nowrap"
                                 >
                                     {employee.employeeId}
                                 </th>
-                                <td className="px-6 py-4 text-[#333333]">{employee.name}</td>
-                                <td className="px-6 py-4 text-[#333333]">
+                                <td className="px-4 py-3 text-[#333333]">{employee.name}</td>
+                                <td className="px-4 py-3 text-[#333333]">
                                     {employee.emailId}
                                 </td>
-                                <td className="px-6 py-4 text-[#333333]">
+                                <td className="px-4 py-3 text-[#333333]">
                                     {employee.phoneNumber}
                                 </td>
-                                <td className="px-6 py-4">
+                                <td className="px-4 py-3">
                                     <button
                                         type="button"
                                         data-modal-toggle="popup-modal"
@@ -70,11 +76,11 @@ const EmployeeTable = ({ employees }) => {
                                         Renew
                                     </button>
                                 </td>
-                                <td className="px-6 py-4">
+                                <td className="px-4 py-3">
                                     <button
                                         type="button"
                                         data-modal-toggle="popup-modal"
-                                        onClick={() => {console.log(employee)}}
+                                        onClick={() => handleDeleteEmployeeBtn(employee.employeeId)}
                                         className="block text-white bg-red-500 hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800"
                                     >
                                         Delete
@@ -91,13 +97,12 @@ const EmployeeTable = ({ employees }) => {
                 </div>
             )}
 
-            {/* <DeleteUserModal
-                title={`Are you sure you want to delete this employee with Employee Id ${employeeForDeletion.employeeId}`}
+            <DeleteEmployeeModal
                 show={isDeleteModalOpened}
-                username={studentForDeletion.username}
-                onConfirmationCallback={handleStudentDeleteModalBtn}
+                title={`Are you sure you want to delete this employee with Employee Id: ${employeeForDeletion.employeeId}`}
+                onConfirmationCallback={() => handleDeleteEmployeeModalBtn(employeeForDeletion)}
                 onCloseCallback={() => setDeleteModalOpened(false)}
-            /> */}
+            />
         </>
     );
 };
