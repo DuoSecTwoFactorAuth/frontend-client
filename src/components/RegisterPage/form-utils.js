@@ -67,11 +67,30 @@ const registerIIValidationSchema = (values) => {
     return errors;
 };
 
-const postCompanyRegisterIIDetails = async (route, companyDetails, setRegisterConfirmMsg) => {
+const postCompanyRegisterIIDetails = async (route, companyDetails, setRegisterCompanyDetails, setRegisterConfirmMsg, toast) => {
     try {
         const res = await axios.post(route, companyDetails);
-        if (res.status === 201) {
-            setRegisterConfirmMsg("You have been successfully registered. Click below to proceed to login.");
+        if (res.status === 200) {
+            toast.success('Your company details have been successfully submitted with our application.', {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
+            
+            setRegisterCompanyDetails({
+                otpRefreshDuration: 0,
+                algorithm: "",
+                password: "",
+                confirmPassword: "",
+                companyUniqueId: companyDetails.companyUniqueId
+            });
+
+            setRegisterConfirmMsg("Click below to proceed to login.");
         }
     } catch (err) {
         console.log(err);
