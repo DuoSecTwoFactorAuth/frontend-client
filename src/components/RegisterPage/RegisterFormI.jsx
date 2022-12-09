@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { registerIValidationSchema, postCompanyRegisterIDetails } from "./form-utils.js";
 import routes from "../../utils/routes.js";
 
-const RegisterFormI = () => {
+const RegisterFormI = ({ toast }) => {
     const [isMailSent, setMailSent] = useState(false);
 
     const [companyDetails, setCompanyDetails] = useState({
@@ -10,10 +10,10 @@ const RegisterFormI = () => {
         companyEmailId: ""
     });
 
-    const [errors, setErrors] = useState({ 
+    const [errors, setErrors] = useState({
         companyName: "",
         companyEmailId: ""
-    })
+    });
 
     const handleChangeInCompanyDetails = (event) => {
         setCompanyDetails((previousState) => {
@@ -28,7 +28,7 @@ const RegisterFormI = () => {
         setErrors(formErrors);
         
         if (Object.keys(formErrors).length === 0) {
-            postCompanyRegisterIDetails(routes.auth.registerI, companyDetails, setMailSent);
+            postCompanyRegisterIDetails(routes.auth.registerI, companyDetails, setMailSent, setCompanyDetails, toast);
         }
     };
 
@@ -71,7 +71,7 @@ const RegisterFormI = () => {
                     <button type="submit" className="px-12 text-white bg-[#333533] rounded-full">Enter</button>
                 </div>
 
-                {isMailSent ? <p className="text-red-700">*You have successfully registered. Please check your email for further steps</p> : null}
+                {isMailSent ? <p className="text-red-700">*Please check your email for further steps</p> : null}
             </form>
         </React.Fragment>
     );  

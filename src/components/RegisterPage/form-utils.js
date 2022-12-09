@@ -16,10 +16,26 @@ const registerIValidationSchema = (values) => {
     return errors;
 };
 
-const postCompanyRegisterIDetails = async (route, companyDetails, setMailSent) => {
+const postCompanyRegisterIDetails = async (route, companyDetails, setMailSent, setCompanyDetails, toast) => {
     try {
         const res = await axios.post(route, companyDetails);
         if (res.status === 201) {
+            toast.success('You have successfully submitted your details.', {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
+
+            setCompanyDetails({
+                companyName: "",
+                companyEmailId: ""
+            });
+
             setMailSent(true);
         }        
     } catch (err) {
