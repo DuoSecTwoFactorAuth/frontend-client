@@ -17,7 +17,7 @@ const routes = {
   },
   qrCode: {
     getQRCode: "/get-qr-code?companyEmployeeHash=",
-  },
+  }
 };
 
 export default routes;

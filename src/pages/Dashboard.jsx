@@ -1,47 +1,150 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { ToastContainer, toast } from "react-toastify";
-import AddEmployeeModal from "../components/DashboardPage/AddEmployeeModal.jsx";
 import { LoginContext } from "../contexts/LoginContext.jsx";
+import EmployeeTable from "../components/DashboardPage/EmployeeTable.jsx";
+import Pagination from '../components/DashboardPage/Pagination.jsx';
+import AddEmployeeModal from "../components/DashboardPage/AddEmployeeModal.jsx";
+import axios from "../utils/axios.js";
+import routes from "../utils/routes.js";
+import plusLogo from "../assets/logos/plus.svg";
+
+const getAllEmployees = async (route, jwtToken, companyUniqueId, pageNo, setEmployeesDetails, setPageDetails) => {
+    try {
+        const res = await axios.post(route, {
+            companyUniqueId: companyUniqueId,
+            employeeName: "",
+            sortBy: "",
+            page: pageNo,
+            size: 10,
+            sort: true
+        }, {
+            headers: {
+                "Authorization": "Bearer " + jwtToken
+            }
+        });
+
+        if (res.status === 200) { 
+            const tableDetails = res.data;
+
+            setEmployeesDetails(tableDetails.employeeData);
+            
+            setPageDetails({
+                currentPage: pageNo,
+                totalPages: tableDetails.totalPages,
+                totalEmployees: tableDetails.totalEmployees
+            })
+        }
+    } catch (err) {
+        console.error(err);
+    }
+}
+
+const deleteEmployee = async(route, jwtToken, companyUniqueId, employeeId, toast) => {
+    try {
+        await axiosInstance.delete(route, {
+            headers: {
+                "Authorization": `Bearer ${jwtToken}`,
+            },
+            data: {
+                "companyUniqueId": companyUniqueId,
+                "employeeId": employeeId                
+            }
+        });
+        
+        toast.success(`Employee with Employee Id ${use} is successfully deleted.`, {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: false,
+            draggable: true,
+            progress: undefined,
+        });                                               
+    } catch (err) {
+        console.error(err);
+    }
+};
 
 const Dashboard = () => {
     const { authStatus, compData } = useContext(LoginContext);
     
     const [showAddEmpModal, setShowAddEmpModal] = useState(false);
 
+    const [employeesDetails, setEmployeesDetails] = useState([
+        {
+            employeeId: "",
+            name: "",
+            emailId: "",
+            phoneNumber: ""
+        }
+    ]); 
+
+    const [pageDetails, setPageDetails] = useState({
+        currentPage: 0,
+        totalPages: 0,
+        totalEmployees: 0
+    })
+
+    useEffect(() => {
+        if (authStatus === true && compData !== null) {
+            getAllEmployees(routes.dashboard.getAllEmployees, compData.token, compData.companyUniqueId, pageDetails.currentPage, setEmployeesDetails, setPageDetails);
+        }
+    }, [authStatus, compData, pageDetails.currentPage]);
+
+    const onPreviousPage = () => {
+        setPageDetails((previousState) => {
+            if (previousState.currentPage > 0) {
+                return { ...previousState, currentPage: previousState.currentPage - 1 }
+            }
+
+            return previousState;
+        });
+    }
+
+    const onPageChange = (pageNo) => {
+        setPageDetails((previousState) => {
+            return { ...previousState, currentPage: pageNo };
+        });
+    }
+
+    const onNextPage = () => {
+        setPageDetails((previousState) => {
+            if (previousState.currentPage < previousState.totalPages) {
+                return { ...previousState, currentPage: previousState.currentPage + 1 }
+            }
+
+            return previousState;
+        });
+    }
+
     return (
         <>
-            <table>
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>FIRST NAME</th>
-                        <th>LAST NAME</th>
-                        <th>EMAIL</th>
-                        <th>PHONE</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {/* {data.map(item => {
-                        return (
-                            <tr>
-                                <td>{item.id}</td>
-                                <td>{item.first_name}</td>
-                                <td>{item.last_name}</td>
-                                <td>{item.email}</td>
-                                <td>{item.phone}</td>
-                            </tr>
-                        );
-                    })} */}
-                </tbody>
-            </table>
+            <div className="flex flex-col justify-center items-center gap-y-8">
+                <EmployeeTable
+                    employees={employeesDetails}
+                    jwtToken={compData.token}
+                    companyUniqueId={compData.companyUniqueId}
+                    deleteEmployee={deleteEmployee}
+                    toast={toast}
+                />    
 
-            <button
-                className="bg-pink-500 text-white active:bg-pink-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                type="button"
-                onClick={() => setShowAddEmpModal(true)}
-            >
-                Open Add Employee modal
-            </button>
+                <div className="w-[75%] h-fit py-4 bg-red-500 flex flex-row justify-between items-center">
+                    <Pagination
+                        totalPages={pageDetails.totalPages}
+                        onPreviousPage={onPreviousPage}
+                        onPageChange={onPageChange}
+                        onNextPage={onNextPage}
+                    />
+
+                    <button
+                        className="ml-auto bg-[#D9D9D9] shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 rounded-full"
+                        type="button"
+                        onClick={() => setShowAddEmpModal(true)}
+                    >
+                        <img src={plusLogo} className="w-6 h-8" />
+                    </button>
+                </div>
+            </div>
 
             <AddEmployeeModal
                 showAddEmpModal={showAddEmpModal}
