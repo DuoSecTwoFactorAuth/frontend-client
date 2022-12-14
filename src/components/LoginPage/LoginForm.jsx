@@ -1,5 +1,6 @@
 import React, { useState, useContext } from "react";
-import { LoginContext } from "../../contexts/LoginContext.jsx" 
+import { LoginContext } from "../../contexts/LoginContext.jsx";
+import { sha256 } from 'crypto-hash';
 import { loginValidationSchema } from "./form-utils";
 import routes from "../../utils/routes.js";
 
@@ -22,14 +23,19 @@ const LoginForm = () => {
         })
     };
 
-    const submitLoginDetails = (event) => {
+    const submitLoginDetails = async(event) => {
         event.preventDefault();
 
-        const formErrors = loginValidationSchema(loginDetails);
+        const login = JSON.parse(JSON.stringify(loginDetails));
+
+        const formErrors = loginValidationSchema(login);
         setErrors(formErrors);
         
         if (Object.keys(formErrors).length === 0) {
-            handleLogin(routes.auth.login, loginDetails, setErrors);
+            const hashedPassword = await sha256(login.password);
+            login.password = hashedPassword;
+            
+            handleLogin(routes.auth.login, login, setErrors);
         }
     }
 

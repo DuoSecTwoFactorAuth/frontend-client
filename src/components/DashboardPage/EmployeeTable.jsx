@@ -18,7 +18,7 @@ const EmployeeTable = ({ employees, jwtToken, companyUniqueId, deleteEmployee, t
     };
 
     const handleDeleteEmployeeModalBtn = (employeeId) => {
-        deleteEmployee(routes.dashboard.deleteEmployee, jwtToken, companyUniqueId, employeeId, toast)
+        deleteEmployee(routes.dashboard.deleteEmployee, jwtToken, companyUniqueId, employeeId, toast);
     };
 
     return (

@@ -2,8 +2,20 @@ import { React, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import duosecLogo from "../assets/logos/duosec-logo.svg";
 import QRCode from "react-qr-code";
-import fetchQRCode from "./qrcode-api-handlers";
+import axios from "../utils/axios.js";
 import routes from "../utils/routes.js";
+
+async function fetchQRCode(route, setData) {
+    try {
+        const response = await axios.get(route);
+        const data = await response.data;
+        setData(data);
+    } catch (err) {
+        console.error(err);
+        setData(null);
+    }
+}
+
 
 const QRCodePage = () => {
   const { companyEmployeeHash } = useParams();

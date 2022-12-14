@@ -14,6 +14,8 @@ const routes = {
   },
   dashboard: {
     addEmployee: "/add-employee-from -ui",
+    deleteEmployee: "/delete-employee-from -ui",
+    getAllEmployees: "/get-all-employee"
   },
   qrCode: {
     getQRCode: "/get-qr-code?companyEmployeeHash=",

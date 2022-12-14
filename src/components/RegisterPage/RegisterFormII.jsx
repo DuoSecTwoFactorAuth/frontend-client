@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
+import { sha256 } from 'crypto-hash';
 import showPasswordLogo from "../../assets/logos/show-password.svg";
 import hidePasswordLogo from "../../assets/logos/hide-password.svg";
 import { registerIIValidationSchema, postCompanyRegisterIIDetails, getCompanyDetails } from "./form-utils.js"
@@ -51,7 +52,7 @@ const RegisterFormII = ({ toast }) => {
         });
     };
 
-    const handleSubmitCompanyDetails = (event) => {
+    const handleSubmitCompanyDetails = async(event) => {
         event.preventDefault();
         
         const registerCompDetails = JSON.parse(JSON.stringify(registerCompanyDetails));
@@ -61,6 +62,10 @@ const RegisterFormII = ({ toast }) => {
 
         if (Object.keys(formErrors).length === 0) {
             delete registerCompDetails["confirmPassword"];
+            
+            const hashedPassword = await sha256(registerCompDetails.password);
+            registerCompDetails.password = hashedPassword;
+            
             postCompanyRegisterIIDetails(routes.auth.registerII, registerCompDetails, setRegisterCompanyDetails, setRegisterConfirmMsg, toast);
         } 
     };

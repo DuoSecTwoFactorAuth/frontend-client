@@ -41,7 +41,7 @@ const getAllEmployees = async (route, jwtToken, companyUniqueId, pageNo, setEmpl
 
 const deleteEmployee = async(route, jwtToken, companyUniqueId, employeeId, toast) => {
     try {
-        await axiosInstance.delete(route, {
+        await axios.delete(route, {
             headers: {
                 "Authorization": `Bearer ${jwtToken}`,
             },
