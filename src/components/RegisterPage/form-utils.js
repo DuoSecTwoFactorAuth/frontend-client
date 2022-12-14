@@ -16,12 +16,28 @@ const registerIValidationSchema = (values) => {
     return errors;
 };
 
-const postCompanyRegisterIDetails = async (route, companyDetails) => {
+const postCompanyRegisterIDetails = async (route, companyDetails, setMailSent, setCompanyDetails, toast) => {
     try {
         const res = await axios.post(route, companyDetails);
-        const data = await res.data;
-        console.log(res);
-        console.log(data);
+        if (res.status === 201) {
+            toast.success('You have successfully submitted your details.', {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
+
+            setCompanyDetails({
+                companyName: "",
+                companyEmailId: ""
+            });
+
+            setMailSent(true);
+        }        
     } catch (err) {
         console.log(err);
     }
@@ -30,7 +46,7 @@ const postCompanyRegisterIDetails = async (route, companyDetails) => {
 const registerIIValidationSchema = (values) => {
     const errors = {};
     
-    if (!values.otpRefreshDuration) {
+    if (values.otpRefreshDuration <= 0) {
         errors.otpRefreshDuration = 'Please select a refresh time for otp greater than 0 mins';
     };
 
@@ -51,9 +67,31 @@ const registerIIValidationSchema = (values) => {
     return errors;
 };
 
-const postCompanyRegisterIIDetails = async (route, companyDetails) => {
+const postCompanyRegisterIIDetails = async (route, companyDetails, setRegisterCompanyDetails, setRegisterConfirmMsg, toast) => {
     try {
-        await axios.post(route, companyDetails);
+        const res = await axios.post(route, companyDetails);
+        if (res.status === 200) {
+            toast.success('Your company details have been successfully submitted with our application.', {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
+            
+            setRegisterCompanyDetails({
+                otpRefreshDuration: 0,
+                algorithm: "",
+                password: "",
+                confirmPassword: "",
+                companyUniqueId: companyDetails.companyUniqueId
+            });
+
+            setRegisterConfirmMsg("Click on this text to proceed to login.");
+        }
     } catch (err) {
         console.log(err);
     }
@@ -66,8 +104,8 @@ const getCompanyDetails = async (route, companyUniqueId, setCompanyDetails) => {
                 uniqueId: companyUniqueId
             }
         });
-        
-        if (res.statusText === "OK") {
+       
+        if (res.status === 200) {
             const companyDetails = await res.data;
             setCompanyDetails(companyDetails);
         }

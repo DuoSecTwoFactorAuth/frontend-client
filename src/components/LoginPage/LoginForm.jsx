@@ -1,5 +1,6 @@
 import React, { useState, useContext } from "react";
-import { LoginContext } from "../../contexts/LoginContext.jsx" 
+import { LoginContext } from "../../contexts/LoginContext.jsx";
+import { sha256 } from 'crypto-hash';
 import { loginValidationSchema } from "./form-utils";
 import routes from "../../utils/routes.js";
 
@@ -22,18 +23,20 @@ const LoginForm = () => {
         })
     };
 
-    const submitLoginDetails = (event) => {
+    const submitLoginDetails = async(event) => {
         event.preventDefault();
 
-        const formErrors = loginValidationSchema(loginDetails);
-        console.log(formErrors);
+        const login = JSON.parse(JSON.stringify(loginDetails));
+
+        const formErrors = loginValidationSchema(login);
+        setErrors(formErrors);
         
-        if (Object.keys(formErrors).length !== 0) {
-            setErrors(formErrors);
-            console.error(formErrors);
-        } else {
-            handleLogin(routes.auth.login, loginDetails);
-        };
+        if (Object.keys(formErrors).length === 0) {
+            const hashedPassword = await sha256(login.password);
+            login.password = hashedPassword;
+            
+            handleLogin(routes.auth.login, login, setErrors);
+        }
     }
 
     return (
@@ -74,6 +77,8 @@ const LoginForm = () => {
                 <div className="flex flex-row justify-center">
                     <button type="submit" className="px-12 text-white bg-[#333533] rounded-full">Enter</button>
                 </div>
+
+                {errors.invalidCredentials ? <p className="flex flex-row justify-center text-red-700 indent-1.5">{errors.invalidCredentials}</p>: null}
             </form>
         </>
     )
