@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { sha256 } from 'crypto-hash';
-import showPasswordLogo from "../../assets/logos/show-password.svg";
-import hidePasswordLogo from "../../assets/logos/hide-password.svg";
 import { registerIIValidationSchema, postCompanyRegisterIIDetails, getCompanyDetails } from "./form-utils.js"
 import routes from "../../utils/routes.js";
 
 const RegisterFormII = ({ toast }) => {
+    const navigate = useNavigate();
+
     const [searchParams] = useSearchParams();
     
     const [registerConfirmMsg, setRegisterConfirmMsg] = useState("");
@@ -21,7 +21,7 @@ const RegisterFormII = ({ toast }) => {
         algorithm: "",
         password: "",
         confirmPassword: "",
-        companyUniqueId: searchParams.get('uniqueId')
+        companyUniqueId: searchParams.get('companyUniqueId')
     });
 
     const [showPasswords, setShowPasswords] = useState({
@@ -37,7 +37,7 @@ const RegisterFormII = ({ toast }) => {
     });
 
     useEffect(() => {
-        getCompanyDetails(routes.companyDetails.getDetails, searchParams.get('uniqueId'), setCompanyDetails);
+        getCompanyDetails(routes.companyDetails.getDetails, searchParams.get('companyUniqueId'), setCompanyDetails);
     }, [searchParams]);
 
     const handleShowOrHidePasswords = (event, passwordType) => {
@@ -131,31 +131,14 @@ const RegisterFormII = ({ toast }) => {
                 </div>
                 
                 <div className="flex flex-col justify-center gap-y-2">
-                    <div className="flex flex-row justify-between items-center"> 
-                        <input
-                            type={showPasswords.password ? "text" : "password"}
-                            placeholder="Password"
-                            name="password"
-                            value={registerCompanyDetails.password}
-                            onChange={handleChangeInRegisterDetails}
-                            className="w-[100%] h-[100%] bg-[#E8EDDF] outline-none"
-                        />
-                        <button
-                            type="button"
-                            onClick={(event) => handleShowOrHidePasswords(event, "password")}
-                            className="bg-[#E8EDDF]"
-                        >
-                            <img
-                                src={showPasswords.password ? showPasswordLogo : hidePasswordLogo}
-                                alt={
-                                    showPasswords.password
-                                    ? "password is visible"
-                                    : "password is not visible"
-                                }
-                                className="w-8 h-8"
-                            />
-                        </button>
-                    </div>
+                    <input
+                        type={showPasswords.password ? "text" : "password"}
+                        placeholder="Password"
+                        name="password"
+                        value={registerCompanyDetails.password}
+                        onChange={handleChangeInRegisterDetails}
+                        className="rounded-md bg-[#E8EDDF]"
+                    />
                     {errors.password !== "" ? <p className="text-red-700 indent-1.5">{errors.password}</p> : null}
                 </div>
 
@@ -173,9 +156,13 @@ const RegisterFormII = ({ toast }) => {
                 
                 <button type="submit" className="text-white bg-[#333533] rounded-full">Enter</button>
                 {registerConfirmMsg !== ""
-                    ? (<div className="flex flex-col ">
-                        <p className="text-red-700 indent-1.5">{registerConfirmMsg}</p>
-                        <button className="w-fit px-8 text-white bg-[#333533] rounded-full">Proceed to Login</button>
+                    ? (<div className="flex flex-col">
+                        <p
+                            className="text-red-700 indent-1.5 cursor-pointer"
+                            onClick={() => {navigate("/login", { replace: true })}}
+                        >
+                            {registerConfirmMsg}
+                        </p>
                     </div>)
                     : null
                 }

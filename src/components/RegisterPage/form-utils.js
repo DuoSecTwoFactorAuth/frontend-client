@@ -90,7 +90,7 @@ const postCompanyRegisterIIDetails = async (route, companyDetails, setRegisterCo
                 companyUniqueId: companyDetails.companyUniqueId
             });
 
-            setRegisterConfirmMsg("Click below to proceed to login.");
+            setRegisterConfirmMsg("Click on this text to proceed to login.");
         }
     } catch (err) {
         console.log(err);
