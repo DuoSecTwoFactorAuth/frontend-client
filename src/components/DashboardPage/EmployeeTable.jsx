@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import DeleteEmployeeModal from "./DeleteEmployeeModal.jsx";
 import routes from "../../utils/routes.js";
 
-const EmployeeTable = ({ employees, jwtToken, companyUniqueId, deleteEmployee, toast }) => {
+const EmployeeTable = ({ employees, setEmployeesDetails, jwtToken, companyUniqueId, deleteEmployee, toast }) => {
     const [isDeleteModalOpened, setDeleteModalOpened] = useState(false);
 
     const [employeeForDeletion, setEmployeeForDeletion] = useState({
@@ -12,13 +12,13 @@ const EmployeeTable = ({ employees, jwtToken, companyUniqueId, deleteEmployee, t
 
     const handleDeleteEmployeeBtn = (employeeId) => {
         setEmployeeForDeletion((previousState) => {
-            return { ...previousState, employeeId: employeeId}
+            return {...previousState, employeeId: employeeId}
         });
         setDeleteModalOpened(true);
     };
 
-    const handleDeleteEmployeeModalBtn = (employeeId) => {
-        deleteEmployee(routes.dashboard.deleteEmployee, jwtToken, companyUniqueId, employeeId, toast);
+    const handleDeleteEmployeeModalBtn = (employeeForDeletion) => {
+        deleteEmployee(routes.dashboard.deleteEmployee, jwtToken, employeeForDeletion, setEmployeesDetails, setDeleteModalOpened, toast);
     };
 
     return (

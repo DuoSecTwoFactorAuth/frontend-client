@@ -39,27 +39,34 @@ const getAllEmployees = async (route, jwtToken, companyUniqueId, pageNo, setEmpl
     }
 }
 
-const deleteEmployee = async(route, jwtToken, companyUniqueId, employeeId, toast) => {
+const deleteEmployee = async(route, jwtToken, employeeForDeletion, setEmployeesDetails, setDeleteModalOpened, toast) => {
     try {
-        await axios.delete(route, {
+        const res = await axios.delete(route, {
             headers: {
                 "Authorization": `Bearer ${jwtToken}`,
             },
-            data: {
-                "companyUniqueId": companyUniqueId,
-                "employeeId": employeeId                
-            }
+            data: employeeForDeletion
         });
-        
-        toast.success(`Employee with Employee Id ${use} is successfully deleted.`, {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: false,
-            draggable: true,
-            progress: undefined,
-        });                                               
+
+        if (res.status === 202) {
+            setEmployeesDetails((previousState) => {
+                return previousState.filter((employee) => {
+                    return employee.employeeId !== employeeForDeletion.employeeId
+                });
+            });
+
+            toast.success(`Employee with Employee Id ${employeeForDeletion.employeeId} is successfully deleted.`, {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: true,
+                progress: undefined,
+            });
+
+            setDeleteModalOpened(false);
+        }    
     } catch (err) {
         console.error(err);
     }
@@ -122,6 +129,7 @@ const Dashboard = () => {
             <div className="flex flex-col justify-center items-center gap-y-8">
                 <EmployeeTable
                     employees={employeesDetails}
+                    setEmployeesDetails={setEmployeesDetails}
                     jwtToken={compData.token}
                     companyUniqueId={compData.companyUniqueId}
                     deleteEmployee={deleteEmployee}
