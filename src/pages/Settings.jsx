@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import copy from "copy-to-clipboard";
+import { sha256 } from 'crypto-hash';
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { LoginContext } from "../contexts/LoginContext.jsx";
@@ -29,7 +30,8 @@ const passwordValidationSchema = (values) => {
     errors.confirmNewPassword = "Please retype your new password";
   } else if (
     values.newPassword !== "" &&
-    values.confirmNewPassword !== "" &&
+    values.confirmNewPassword !== "" && 
+    values.newPassword !== values.oldPassword && 
     values.confirmNewPassword !== values.newPassword
   ) {
     errors.confirmNewPassword =
@@ -167,7 +169,7 @@ const Settings = () => {
     });
   };
 
-  const handleSubmitChangePassword = (event) => {
+  const handleSubmitChangePassword = async(event) => {
     event.preventDefault();
 
     const formErrors = passwordValidationSchema(password);
@@ -177,9 +179,16 @@ const Settings = () => {
       // creating deep copy of password obj
       const changePasswordDetails = JSON.parse(JSON.stringify(password));
 
-      delete changePasswordDetails["confirmNewPassword"];
-      changePasswordDetails["companyUniqueId"] = compData.companyUniqueId;
+      changePasswordDetails.companyUniqueId = compData.companyUniqueId;
 
+      const hashedOldPassword = await sha256(changePasswordDetails.oldPassword);
+      changePasswordDetails.oldPassword = hashedOldPassword;
+
+      const hashedNewPassword = await sha256(changePasswordDetails.newPassword);
+      changePasswordDetails.newPassword = hashedNewPassword;
+
+      delete changePasswordDetails["confirmNewPassword"];
+      
       changePassword(
         routes.settings.changePassword,
         compData.token,
