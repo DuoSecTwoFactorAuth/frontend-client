@@ -131,6 +131,7 @@ const Dashboard = () => {
                     <div className='flex flex-row justify-center -mr-40 w-full'>
                         <EmployeeTable
                             employees={employeesDetails}
+                            setEmployeesDetails={setEmployeesDetails}
                             jwtToken={compData.token}
                             companyUniqueId={compData.companyUniqueId}
                             deleteEmployee={deleteEmployee}
