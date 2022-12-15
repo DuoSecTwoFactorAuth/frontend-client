@@ -23,11 +23,11 @@ const getAllEmployees = async (route, jwtToken, companyUniqueId, pageNo, setEmpl
             }
         });
 
-        if (res.status === 200) { 
+        if (res.status === 200) {
             const tableDetails = res.data;
 
             setEmployeesDetails(tableDetails.employeeData);
-            
+
             setPageDetails({
                 currentPage: pageNo,
                 totalPages: tableDetails.totalPages,
@@ -39,7 +39,7 @@ const getAllEmployees = async (route, jwtToken, companyUniqueId, pageNo, setEmpl
     }
 }
 
-const deleteEmployee = async(route, jwtToken, employeeForDeletion, setEmployeesDetails, setDeleteModalOpened, toast) => {
+const deleteEmployee = async (route, jwtToken, employeeForDeletion, setEmployeesDetails, setDeleteModalOpened, toast) => {
     try {
         const res = await axios.delete(route, {
             headers: {
@@ -66,7 +66,7 @@ const deleteEmployee = async(route, jwtToken, employeeForDeletion, setEmployeesD
             });
 
             setDeleteModalOpened(false);
-        }    
+        }
     } catch (err) {
         console.error(err);
     }
@@ -74,7 +74,7 @@ const deleteEmployee = async(route, jwtToken, employeeForDeletion, setEmployeesD
 
 const Dashboard = () => {
     const { authStatus, compData } = useContext(LoginContext);
-    
+
     const [showAddEmpModal, setShowAddEmpModal] = useState(false);
 
     const [employeesDetails, setEmployeesDetails] = useState([
@@ -84,7 +84,7 @@ const Dashboard = () => {
             emailId: "",
             phoneNumber: ""
         }
-    ]); 
+    ]);
 
     const [pageDetails, setPageDetails] = useState({
         currentPage: 0,
@@ -126,31 +126,35 @@ const Dashboard = () => {
 
     return (
         <>
-            <div className="flex flex-col justify-center items-center gap-y-8">
-                <EmployeeTable
-                    employees={employeesDetails}
-                    setEmployeesDetails={setEmployeesDetails}
-                    jwtToken={compData.token}
-                    companyUniqueId={compData.companyUniqueId}
-                    deleteEmployee={deleteEmployee}
-                    toast={toast}
-                />    
+            <div className="min-h-screen flex flex-col justify-start items-center gap-y-4">
+                <div className='flex flex-row justify-between w-screen'>
+                    <div className='flex flex-row justify-center -mr-40 w-full'>
+                        <EmployeeTable
+                            employees={employeesDetails}
+                            jwtToken={compData.token}
+                            companyUniqueId={compData.companyUniqueId}
+                            deleteEmployee={deleteEmployee}
+                            toast={toast}
+                        />
+                    </div>
+                    <div className='flex flex-col w-40 justify-end'>
+                        <button
+                            className="ml-auto bg-[#D9D9D9] shadow hover:shadow-lg outline-none focus:outline-none mr-16 mb-6 ease-linear transition-all duration-150 rounded-full"
+                            type="button"
+                            onClick={() => setShowAddEmpModal(true)}
+                        >
+                            <img src={plusLogo} className="w-6 h-8" />
+                        </button>
+                    </div>
+                </div>
 
-                <div className="w-[75%] h-fit py-4 bg-red-500 flex flex-row justify-between items-center">
+                <div className="w-[75%] h-fit py-2 flex flex-row justify-center items-center">
                     <Pagination
                         totalPages={pageDetails.totalPages}
                         onPreviousPage={onPreviousPage}
                         onPageChange={onPageChange}
                         onNextPage={onNextPage}
                     />
-
-                    <button
-                        className="ml-auto bg-[#D9D9D9] shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 rounded-full"
-                        type="button"
-                        onClick={() => setShowAddEmpModal(true)}
-                    >
-                        <img src={plusLogo} className="w-6 h-8" />
-                    </button>
                 </div>
             </div>
 
