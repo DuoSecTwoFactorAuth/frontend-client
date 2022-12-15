@@ -16,12 +16,12 @@ const Navbar = () => {
 
     return (
         <>
-            <div className="w-screen px-8 py-4 flex flex-row justify-between">
-                <img src={duosecLogo} alt="duosec-logo" />
+            <div className="w-screen px-8 py-2 flex flex-row justify-between">
+                <img src={duosecLogo} alt="duosec-logo" className="h-10" />
                 <div className="flex flex-row gap-x-2">
                     <button onClick={btnAllEmps}>All Employees</button>
                     <button onClick={btnSettings}>Settings</button>
-                    <button><img src={bellIcon} alt="bell-icon" className="w-8 h-8" /></button>
+                    <button><img src={bellIcon} alt="bell-icon" className="w-6 h-6" /></button>
                 </div>
             </div>
             <Outlet />
