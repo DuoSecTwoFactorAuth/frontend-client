@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { validateEmpDetails, addEmployee } from "./form-utils.js";
 import routes from "../../utils/routes.js";
 
-const AddEmployeeModal = ({ showAddEmpModal, setShowAddEmpModal, companyUniqueId, jwtToken, toast }) => {
+const AddEmployeeModal = ({ setEmployeesDetails, showAddEmpModal, setShowAddEmpModal, companyUniqueId, jwtToken, toast }) => {
     if (!showAddEmpModal) {
         return null;
     }
@@ -35,7 +35,7 @@ const AddEmployeeModal = ({ showAddEmpModal, setShowAddEmpModal, companyUniqueId
         setErrors(formErrors);
 
         if (Object.keys(formErrors).length === 0) {
-            addEmployee(routes.dashboard.addEmployee, jwtToken, empDetails, setEmpDetails, toast);
+            addEmployee(routes.dashboard.addEmployee, jwtToken, empDetails, setEmpDetails, setEmployeesDetails, toast);
         }
     }
 

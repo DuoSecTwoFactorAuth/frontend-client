@@ -24,9 +24,9 @@ const validateEmpDetails = (values) => {
     return errors;
 };
 
-const addEmployee = async (route, jwtToken, empDetails, clearFields, toast) => {
+const addEmployee = async (route, jwtToken, employeeDetails, clearFields, setEmployeesDetails, toast) => {
     try {
-        const res = await axios.post(route, empDetails, {
+        const res = await axios.post(route, employeeDetails, {
             headers: {
                 'Authorization': 'Bearer ' + jwtToken
             }
@@ -45,12 +45,19 @@ const addEmployee = async (route, jwtToken, empDetails, clearFields, toast) => {
             });
 
             clearFields({
-                companyUniqueId: empDetails.companyUniqueId,
+                companyUniqueId: employeeDetails.companyUniqueId,
                 employeeId: "",
                 name: "",
                 emailId: "",
                 phoneNumber: ""
             });
+
+            setEmployeesDetails((previousState) => {
+                const empDetails = JSON.parse(JSON.stringify(employeeDetails));
+                delete empDetails["companyUniqueId"];
+                previousState.push(employeeDetails);
+                return previousState;
+            })
         }
     } catch (err) {
         console.error(err);

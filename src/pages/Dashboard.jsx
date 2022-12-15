@@ -160,6 +160,7 @@ const Dashboard = () => {
             </div>
 
             <AddEmployeeModal
+                setEmployeesDetails={setEmployeesDetails}
                 showAddEmpModal={showAddEmpModal}
                 setShowAddEmpModal={setShowAddEmpModal}
                 companyUniqueId={compData.companyUniqueId}
