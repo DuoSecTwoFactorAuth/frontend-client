@@ -4,7 +4,7 @@ import axios from "axios";
 // deployment baseURL: http://ec2-3-87-229-37.compute-1.amazonaws.com:8080
 
 const axiosInstance = axios.create({
-  baseURL: 'http://ec2-3-87-229-37.compute-1.amazonaws.com:8080',
+  baseURL: 'http://localhost:8080',
 });
 
 export default axiosInstance;

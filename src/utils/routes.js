@@ -13,8 +13,8 @@ const routes = {
     changePassword: "settings/change-password",
   },
   dashboard: {
-    addEmployee: "/add-employee-from -ui",
-    deleteEmployee: "/delete-employee-from -ui",
+    addEmployee: "/add-employee-from-ui",
+    deleteEmployee: "/delete-employee-from-ui",
     getAllEmployees: "/get-all-employee",
   },
   qrCode: {
